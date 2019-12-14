@@ -12,7 +12,7 @@
 #include <random>
 #include <gtest/gtest.h>
 
-const int SIZE = 5000, N = 10000;
+const int SIZE = 5000, N =100000;
 
 void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, int amount) {
     srand(key);
