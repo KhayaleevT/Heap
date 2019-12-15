@@ -12,7 +12,7 @@
 #include <random>
 #include <gtest/gtest.h>
 
-const int SIZE = 5000, N =100000;
+const int SIZE = 5000, N = 100000;
 
 void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, int amount) {
     srand(key);
@@ -32,12 +32,7 @@ void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, 
         if (x % 4 == GetMin) {
             int num = rand() % heaps_left;
             if (!tested[num]->Empty()) {
-                int min1 = tested[num]->GetMin();
-                int min2 = in_test[num]->GetMin();
-                if (min1 != min2) {
-                    std::cout << "why in the hell";
-                }
-                ASSERT_EQ(min1, min2);
+                ASSERT_EQ(tested[num]->GetMin(), in_test[num]->GetMin());
             }
         }
         if (x % 4 == ExtractMin) {
