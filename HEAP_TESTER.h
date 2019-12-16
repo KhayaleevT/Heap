@@ -7,8 +7,6 @@
 
 #include "IHeap.h"
 #include "BinomialHeap.h"
-#include "LeftistHeap.h"
-#include "SkewHeap.h"
 #include "SkewHeap2_0.h"
 #include "LeftistHeap2_0.h"
 #include <random>
