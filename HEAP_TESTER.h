@@ -12,7 +12,7 @@
 #include <random>
 #include <gtest/gtest.h>
 
-const int SIZE = 1000, N = 1000000;
+const int SIZE = 1000, N = 100000;
 
 void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, int amount, int ins_probability,
             int get_min_probability, int extract_min_probability,
