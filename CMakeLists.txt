@@ -35,6 +35,8 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
     include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wnon-virtual-dtor -pedantic -fsanitize=address")
+
 # Now simply link against gtest or gtest_main as needed. Eg
 add_executable(Heap main.cpp)
 target_link_libraries(Heap gtest_main)
