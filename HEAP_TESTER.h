@@ -14,58 +14,11 @@
 
 const int SIZE = 1000, N = 100000;
 
-void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, int amount, int ins_probability,
-            int get_min_probability, int extract_min_probability,
-            int merge_probability) {
-    srand(key);
-    int heaps_left = SIZE;
-    for (int i = 0; i < amount; i++) {
-        if (heaps_left == 0)break;
-        int x = rand() % 100;
-        int border_1 = ins_probability;
-        int border_2 = border_1 + get_min_probability;
-        int border_3 = border_2 + extract_min_probability;
-        int border_4 = border_3 + merge_probability;
-        if (x >= 0 && x < border_1) {
-            int value = rand();
-            int num = rand() % heaps_left;
-            tested[num]->Insert(value);
-            in_test[num]->Insert(value);
-        }
-        if (x >= border_1 && x < border_2) {
-            int num = rand() % heaps_left;
-            if (!tested[num]->Empty()) {
-                ASSERT_EQ(tested[num]->GetMin(), in_test[num]->GetMin());
-            }
-        }
-        if (x >= border_2 && x < border_3) {
-            int num = rand() % heaps_left;
-            if (!tested[num]->Empty()) {
-                ASSERT_EQ(tested[num]->GetMin(), in_test[num]->GetMin());
-                tested[num]->ExtractMin();
-                in_test[num]->ExtractMin();
-            }
-        }
-        if (x >= border_3 && x < border_4) {
-            int num1 = rand() % heaps_left;
-            int num2 = rand() % heaps_left;
-            if (num2 != num1) {
-                tested[num1]->Merge(*tested[num2]);
-                in_test[num1]->Merge(*in_test[num2]);
-                std::swap(tested[num2], tested.back());
-                std::swap(in_test[num2], in_test.back());
-                tested.pop_back();
-                in_test.pop_back();
-                heaps_left--;
-            }
-        }
-    }
-}
-
 enum {
     BinomialHeapKey, SkewHeapKey, LeftistHeapKey
 };
 
+template<int y>
 class HeapTester : public ::testing::Test {
 protected:
     vector<IHeap<int> *> heaps;
@@ -78,25 +31,25 @@ protected:
         }
     }
 
-    IHeap<int> *_create_Heap(int x) {
+    IHeap<int> *_create_Heap() {
         IHeap<int> *ans;
-        if (x == BinomialHeapKey) {
+        if (y == BinomialHeapKey) {
             ans = new BinomialHeap<int>;
         }
-        if (x == SkewHeapKey) {
+        if (y == SkewHeapKey) {
             ans = new SkewHeap2_0<int>;
         }
-        if (x == LeftistHeapKey) {
+        if (y == LeftistHeapKey) {
             ans = new LeftistHeap2_0<int>;
         }
         return ans;
     }
 
-    void SetUp(int x) {
+    void SetUp() override {
         heaps.resize(SIZE, nullptr);
         good_heaps.resize(SIZE, nullptr);
         for (int i = 0; i < SIZE; i++) {
-            heaps[i] = _create_Heap(x);
+            heaps[i] = _create_Heap();
         }
         _create_good_vector();
     }
@@ -108,36 +61,105 @@ protected:
         }
     }
 
+    void tester(int key = 322, int amount = N, int ins_probability = 25,
+                int get_min_probability = 25, int extract_min_probability = 25,
+                int merge_probability = 25) {
+        srand(key);
+        int heaps_left = SIZE;
+        for (int i = 0; i < amount; i++) {
+            if (heaps_left == 0)break;
+            int x = rand() % 100;
+            int border_1 = ins_probability;
+            int border_2 = border_1 + get_min_probability;
+            int border_3 = border_2 + extract_min_probability;
+            int border_4 = border_3 + merge_probability;
+            if (x >= 0 && x < border_1) {
+                int value = rand();
+                int num = rand() % heaps_left;
+                good_heaps[num]->Insert(value);
+                heaps[num]->Insert(value);
+            }
+            if (x >= border_1 && x < border_2) {
+                int num = rand() % heaps_left;
+                if (!good_heaps[num]->Empty()) {
+                    ASSERT_EQ(good_heaps[num]->GetMin(), heaps[num]->GetMin());
+                }
+            }
+            if (x >= border_2 && x < border_3) {
+                int num = rand() % heaps_left;
+                if (!good_heaps[num]->Empty()) {
+                    ASSERT_EQ(good_heaps[num]->GetMin(), heaps[num]->GetMin());
+                    good_heaps[num]->ExtractMin();
+                    heaps[num]->ExtractMin();
+                }
+            }
+            if (x >= border_3 && x < border_4) {
+                int num1 = rand() % heaps_left;
+                int num2 = rand() % heaps_left;
+                if (num2 != num1) {
+                    good_heaps[num1]->Merge(*good_heaps[num2]);
+                    heaps[num1]->Merge(*heaps[num2]);
+                    std::swap(good_heaps[num2], good_heaps.back());
+                    std::swap(heaps[num2], heaps.back());
+                    good_heaps.pop_back();
+                    heaps.pop_back();
+                    heaps_left--;
+                }
+            }
+        }
+    }
+
+    void test1() {
+        tester(322, N, 25, 25, 25, 25);
+    }
+
+    void test2() {
+        tester(322, N, 50, 0, 25, 25);
+    }
+
+    void test3() {
+        tester(322, N, 50, 0, 45, 5);
+    }
+
 };
 
-TEST_F(HeapTester, BinomialHeap) {
-    SetUp(BinomialHeapKey);
-    tester(good_heaps, heaps, 322, N, 25, 25, 25, 25);
+typedef HeapTester<BinomialHeapKey> BinHeapTester;
+typedef HeapTester<SkewHeapKey> SkewHeapTester;
+typedef HeapTester<LeftistHeapKey> LeftistHeapTester;
+TEST_F(BinHeapTester, BinomialHeap) {
+    test1();
 }
 
-TEST_F(HeapTester, BinomialHeap_2) {
-    SetUp(BinomialHeapKey);
-    tester(good_heaps, heaps, 322, N, 50, 0, 25, 25);
+TEST_F(BinHeapTester, BinomialHeap_2) {
+    test2();
 }
 
-TEST_F(HeapTester, LeftistHeap) {
-    SetUp(LeftistHeapKey);
-    tester(good_heaps, heaps, 322, N, 25, 25, 25, 25);
+TEST_F(BinHeapTester, BinomialHeap_3) {
+    test3();
 }
 
-TEST_F(HeapTester, LeftistHeap_2) {
-    SetUp(LeftistHeapKey);
-    tester(good_heaps, heaps, 322, N, 50, 0, 45, 5);
+TEST_F(LeftistHeapTester, LeftistHeap) {
+    test1();
 }
 
-TEST_F(HeapTester, LeftistHeap_3) {
-    SetUp(LeftistHeapKey);
-    tester(good_heaps, heaps, 322, N, 25, 0, 25, 50);
+TEST_F(LeftistHeapTester, LeftistHeap_2) {
+    test2();
 }
 
-TEST_F(HeapTester, SkewHeap) {
-    SetUp(SkewHeapKey);
-    tester(good_heaps, heaps, 322, N, 25, 25, 25, 25);
+TEST_F(LeftistHeapTester, LeftistHeap_3) {
+    test3();
+}
+
+TEST_F(SkewHeapTester, SkewHeap_1) {
+    test1();
+}
+
+TEST_F(SkewHeapTester, SkewHeap_2) {
+    test2();
+}
+
+TEST_F(SkewHeapTester, SkewHeap_3) {
+    test3();
 }
 
 

@@ -34,7 +34,9 @@ public:
         return s.empty();
     }
 
-
+    int size() {
+        return s.size();
+    }
 };
 
 #endif //HEAP_TESTHEAP_H

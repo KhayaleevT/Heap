@@ -29,6 +29,9 @@ public:
 
     virtual ~IHeap() = default;
 
+    virtual int size() {
+        return 1;
+    }
 };
 
 #endif //UNTITLED_IHEAP_H
