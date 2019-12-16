@@ -12,7 +12,7 @@
 #include <random>
 #include <gtest/gtest.h>
 
-const int SIZE = 5000, N = 100000;
+const int SIZE = 1000, N = 1000000;
 
 void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, int amount, int ins_probability,
             int get_min_probability, int extract_min_probability,
@@ -29,9 +29,6 @@ void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, 
         if (x >= 0 && x < border_1) {
             int value = rand();
             int num = rand() % heaps_left;
-            if (num == 1201) {
-                std::cout << "-";
-            }
             tested[num]->Insert(value);
             in_test[num]->Insert(value);
         }
@@ -130,7 +127,12 @@ TEST_F(HeapTester, LeftistHeap) {
 
 TEST_F(HeapTester, LeftistHeap_2) {
     SetUp(LeftistHeapKey);
-    tester(good_heaps, heaps, 322, N, 50, 25, 25, 25);
+    tester(good_heaps, heaps, 322, N, 50, 0, 45, 5);
+}
+
+TEST_F(HeapTester, LeftistHeap_3) {
+    SetUp(LeftistHeapKey);
+    tester(good_heaps, heaps, 322, N, 25, 0, 25, 50);
 }
 
 TEST_F(HeapTester, SkewHeap) {
@@ -141,7 +143,6 @@ TEST_F(HeapTester, SkewHeap) {
 
 int test() {
     ::testing::InitGoogleTest();
-
     return RUN_ALL_TESTS();
 }
 

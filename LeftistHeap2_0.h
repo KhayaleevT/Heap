@@ -28,7 +28,7 @@ struct VertexL : public Vertex<T> {
         if (rk(left) < rk(right)) {
             std::swap(left, right);
         }
-        rank = std::min(rk(left), rk(right)) + 1;
+        rank = rk(right) + 1;
     };
 };
 

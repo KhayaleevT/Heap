@@ -28,6 +28,7 @@ public:
     virtual bool Empty() = 0;
 
     virtual ~IHeap() = default;
+
 };
 
 #endif //UNTITLED_IHEAP_H
