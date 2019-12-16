@@ -9,6 +9,8 @@
 #include "BinomialHeap.h"
 #include "LeftistHeap.h"
 #include "SkewHeap.h"
+#include "SkewHeap2_0.h"
+#include "LeftistHeap2_0.h"
 #include <random>
 #include <gtest/gtest.h>
 
@@ -81,10 +83,10 @@ protected:
             ans = new BinomialHeap<int>;
         }
         if (x == SkewHeapKey) {
-            ans = new SkewHeap<int>;
+            ans = new SkewHeap2_0<int>;
         }
         if (x == LeftistHeapKey) {
-            ans = new LeftistHeap<int>;
+            ans = new LeftistHeap2_0<int>;
         }
         return ans;
     }
