@@ -14,28 +14,34 @@
 
 const int SIZE = 5000, N = 100000;
 
-void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, int amount) {
+void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, int amount, int ins_probability,
+            int get_min_probability, int extract_min_probability,
+            int merge_probability) {
     srand(key);
-    enum {
-        Insert, GetMin, ExtractMin, Merge
-    };
     int heaps_left = SIZE;
     for (int i = 0; i < amount; i++) {
         if (heaps_left == 0)break;
-        int x = rand();
-        if (x % 4 == Insert) {
+        int x = rand() % 100;
+        int border_1 = ins_probability;
+        int border_2 = border_1 + get_min_probability;
+        int border_3 = border_2 + extract_min_probability;
+        int border_4 = border_3 + merge_probability;
+        if (x >= 0 && x < border_1) {
             int value = rand();
             int num = rand() % heaps_left;
+            if (num == 1201) {
+                std::cout << "-";
+            }
             tested[num]->Insert(value);
             in_test[num]->Insert(value);
         }
-        if (x % 4 == GetMin) {
+        if (x >= border_1 && x < border_2) {
             int num = rand() % heaps_left;
             if (!tested[num]->Empty()) {
                 ASSERT_EQ(tested[num]->GetMin(), in_test[num]->GetMin());
             }
         }
-        if (x % 4 == ExtractMin) {
+        if (x >= border_2 && x < border_3) {
             int num = rand() % heaps_left;
             if (!tested[num]->Empty()) {
                 ASSERT_EQ(tested[num]->GetMin(), in_test[num]->GetMin());
@@ -43,7 +49,7 @@ void tester(vector<IHeap<int> *> tested, vector<IHeap<int> *> in_test, int key, 
                 in_test[num]->ExtractMin();
             }
         }
-        if (x % 4 == Merge) {
+        if (x >= border_3 && x < border_4) {
             int num1 = rand() % heaps_left;
             int num2 = rand() % heaps_left;
             if (num2 != num1) {
@@ -109,18 +115,29 @@ protected:
 
 TEST_F(HeapTester, BinomialHeap) {
     SetUp(BinomialHeapKey);
-    tester(good_heaps, heaps, 322, N);
+    tester(good_heaps, heaps, 322, N, 25, 25, 25, 25);
+}
+
+TEST_F(HeapTester, BinomialHeap_2) {
+    SetUp(BinomialHeapKey);
+    tester(good_heaps, heaps, 322, N, 50, 0, 25, 25);
 }
 
 TEST_F(HeapTester, LeftistHeap) {
     SetUp(LeftistHeapKey);
-    tester(good_heaps, heaps, 322, N);
+    tester(good_heaps, heaps, 322, N, 25, 25, 25, 25);
+}
+
+TEST_F(HeapTester, LeftistHeap_2) {
+    SetUp(LeftistHeapKey);
+    tester(good_heaps, heaps, 322, N, 50, 25, 25, 25);
 }
 
 TEST_F(HeapTester, SkewHeap) {
     SetUp(SkewHeapKey);
-    tester(good_heaps, heaps, 322, N);
+    tester(good_heaps, heaps, 322, N, 25, 25, 25, 25);
 }
+
 
 int test() {
     ::testing::InitGoogleTest();

@@ -70,7 +70,7 @@ public:
         root = Vertex<T>::Meld(l, r);
     }
 
-    virtual void Insert(T x) {};
+    virtual void Insert(T x) = 0;
 
     LeftHeap(LeftHeap &) = delete;
 
@@ -83,7 +83,9 @@ public:
     LeftHeap &operator=(LeftHeap &) = delete;
 
     ~LeftHeap() {
-        if (root != nullptr)root->_destruct();
+        if (root != nullptr) {
+            root->_destruct();
+        }
     }
 
     bool Empty() {
