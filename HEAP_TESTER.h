@@ -76,9 +76,6 @@ protected:
             if (x >= 0 && x < border_1) {
                 int value = rand();
                 int num = rand() % heaps_left;
-                if (num == 139) {
-                    std::cout << " ";
-                }
                 good_heaps[num]->Insert(value);
                 heaps[num]->Insert(value);
             }
@@ -93,9 +90,6 @@ protected:
                 if (!good_heaps[num]->Empty()) {
                     int val1 = good_heaps[num]->GetMin();
                     int val2 = heaps[num]->GetMin();
-                    if (val1 != val2 || num == 139) {
-                        std::cout << "-";
-                    }
                     good_heaps[num]->ExtractMin();
                     heaps[num]->ExtractMin();
                     ASSERT_EQ(val1, val2);
@@ -105,9 +99,6 @@ protected:
                 int num1 = rand() % heaps_left;
                 int num2 = rand() % heaps_left;
                 if (num2 != num1) {
-                    if (num1 == 139 || num2 == 139) {
-                        std::cout << " ";
-                    }
                     good_heaps[num1]->Merge(*good_heaps[num2]);
                     heaps[num1]->Merge(*heaps[num2]);
                     std::swap(good_heaps[num2], good_heaps.back());
