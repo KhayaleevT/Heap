@@ -78,7 +78,7 @@ public:
 
     void Merge(IHeap<T> &b1) {
         BinomialHeap<T> &b = dynamic_cast<BinomialHeap<T> &>(b1);
-        Vertex<T> *residue = new Vertex<T>;
+        Vertex<T> *residue = nullptr;
         bool Resid_Empty = true;
         size_t new_size = max(b.Tree.size(), Tree.size());
         Tree.resize(new_size, nullptr);

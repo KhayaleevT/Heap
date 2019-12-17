@@ -38,8 +38,8 @@ class LeftistHeap2_0 : public LeftHeap<T> {
 private:
 public:
     void Insert(T x) {
-        LeftistHeap2_0<T> *a = new LeftistHeap2_0(x);
-        LeftHeap<T>::Merge(*a);
+        LeftistHeap2_0<T> a(x);
+        LeftHeap<T>::Merge(a);
     }
 
     explicit LeftistHeap2_0<T>(T x) {

@@ -22,8 +22,8 @@ class SkewHeap2_0 : public LeftHeap<T> {
 private:
 public:
     void Insert(T x) {
-        SkewHeap2_0<T> *a = new SkewHeap2_0(x);
-        LeftHeap<T>::Merge(*a);
+        SkewHeap2_0<T> a(x);
+        LeftHeap<T>::Merge(a);
     }
 
     explicit SkewHeap2_0<T>(T x) {
