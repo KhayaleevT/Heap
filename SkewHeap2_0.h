@@ -13,9 +13,7 @@ struct VertexS : public Vertex<T> {
     using Vertex<T>::Vertex;
 
     void invariant_maintenance() {
-        VertexS<T> *left = dynamic_cast<VertexS<T> *>(Vertex<T>::left);
-        VertexS<T> *right = dynamic_cast<VertexS<T> *>(Vertex<T>::right);
-        std::swap(left, right);
+        std::swap(Vertex<T>::left, Vertex<T>::right);
     };
 };
 

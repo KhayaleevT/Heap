@@ -20,19 +20,20 @@ struct Vertex {
         value = x;
     }
 
-    void _destruct() {
-        if (left != nullptr) {
-            left->_destruct();
+    virtual ~ Vertex() {
+        if (this != nullptr) {
+            if (left != nullptr) {
+                delete left;
+            }
+            if (right != nullptr) {
+                delete right;
+            }
         }
-        if (right != nullptr) {
-            right->_destruct();
-        }
-        delete this;
     }
 
     virtual void invariant_maintenance() = 0;
 
-    static Vertex *Meld(Vertex *root1, Vertex *root2) {
+    static Vertex<T> *Meld(Vertex *root1, Vertex *root2) {
         if (root1 == nullptr) {
             return root2;
         }
@@ -66,6 +67,8 @@ public:
     void ExtractMin() {
         Vertex<T> *l = root->left;
         Vertex<T> *r = root->right;
+        root->left = nullptr;
+        root->right = nullptr;
         delete root;
         root = Vertex<T>::Meld(l, r);
     }
@@ -83,9 +86,7 @@ public:
     LeftHeap &operator=(LeftHeap &) = delete;
 
     ~LeftHeap() {
-        if (root != nullptr) {
-            root->_destruct();
-        }
+        delete root;
     }
 
     bool Empty() {

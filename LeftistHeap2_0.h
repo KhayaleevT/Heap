@@ -23,12 +23,13 @@ struct VertexL : public Vertex<T> {
     }
 
     void invariant_maintenance() {
-        VertexL<T> *left = dynamic_cast<VertexL<T> *>(Vertex<T>::left);
-        VertexL<T> *right = dynamic_cast<VertexL<T> *>(Vertex<T>::right);
-        if (rk(left) < rk(right)) {
-            std::swap(left, right);
+        VertexL<T> *l = dynamic_cast<VertexL<T> *>(Vertex<T>::left);
+        VertexL<T> *r = dynamic_cast<VertexL<T> *>(Vertex<T>::right);
+        if (rk(l) < rk(r)) {
+            std::swap(Vertex<T>::left, Vertex<T>::right);
+            std::swap(l, r);
         }
-        rank = rk(right) + 1;
+        rank = rk(r) + 1;
     };
 };
 
@@ -46,9 +47,7 @@ public:
         LeftHeap<T>::root = r;
     }
 
-    LeftistHeap2_0<T>() {
-        LeftHeap<T>::root = nullptr;
-    }
+    LeftistHeap2_0<T>() : LeftHeap<T>() {}
 };
 
 #endif //HEAP_LEFTISTHEAP2_0_H

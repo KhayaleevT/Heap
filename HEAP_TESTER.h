@@ -12,13 +12,13 @@
 #include <random>
 #include <gtest/gtest.h>
 
-const int SIZE = 1000, N = 100000;
+const int SIZE = 1000, N = 1000000;
 
-enum {
+enum Key {
     BinomialHeapKey, SkewHeapKey, LeftistHeapKey
 };
 
-template<int y>
+template<Key y>
 class HeapTester : public ::testing::Test {
 protected:
     vector<IHeap<int> *> heaps;
@@ -55,7 +55,7 @@ protected:
     }
 
     void TearDown() {
-        for (int i = 0; i < SIZE; i++) {
+        for (size_t i = 0; i < heaps.size(); i++) {
             delete heaps[i];
             delete good_heaps[i];
         }
@@ -76,6 +76,9 @@ protected:
             if (x >= 0 && x < border_1) {
                 int value = rand();
                 int num = rand() % heaps_left;
+                if (num == 139) {
+                    std::cout << " ";
+                }
                 good_heaps[num]->Insert(value);
                 heaps[num]->Insert(value);
             }
@@ -88,19 +91,29 @@ protected:
             if (x >= border_2 && x < border_3) {
                 int num = rand() % heaps_left;
                 if (!good_heaps[num]->Empty()) {
-                    ASSERT_EQ(good_heaps[num]->GetMin(), heaps[num]->GetMin());
+                    int val1 = good_heaps[num]->GetMin();
+                    int val2 = heaps[num]->GetMin();
+                    if (val1 != val2 || num == 139) {
+                        std::cout << "-";
+                    }
                     good_heaps[num]->ExtractMin();
                     heaps[num]->ExtractMin();
+                    ASSERT_EQ(val1, val2);
                 }
             }
             if (x >= border_3 && x < border_4) {
                 int num1 = rand() % heaps_left;
                 int num2 = rand() % heaps_left;
                 if (num2 != num1) {
+                    if (num1 == 139 || num2 == 139) {
+                        std::cout << " ";
+                    }
                     good_heaps[num1]->Merge(*good_heaps[num2]);
                     heaps[num1]->Merge(*heaps[num2]);
                     std::swap(good_heaps[num2], good_heaps.back());
                     std::swap(heaps[num2], heaps.back());
+                    delete heaps.back();
+                    delete good_heaps.back();
                     good_heaps.pop_back();
                     heaps.pop_back();
                     heaps_left--;
@@ -121,6 +134,14 @@ protected:
         tester(322, N, 50, 0, 45, 5);
     }
 
+    void test4() {
+        tester(322, N, 70, 0, 20, 10);
+    }
+
+    void test5() {
+        tester(322, N, 30, 0, 10, 60);
+    }
+
 };
 
 typedef HeapTester<BinomialHeapKey> BinHeapTester;
@@ -138,6 +159,14 @@ TEST_F(BinHeapTester, BinomialHeap_3) {
     test3();
 }
 
+TEST_F(BinHeapTester, BinomialHeap_4) {
+    test4();
+}
+
+TEST_F(BinHeapTester, BinomialHeap_5) {
+    test5();
+}
+
 TEST_F(LeftistHeapTester, LeftistHeap) {
     test1();
 }
@@ -150,6 +179,14 @@ TEST_F(LeftistHeapTester, LeftistHeap_3) {
     test3();
 }
 
+TEST_F(LeftistHeapTester, LeftistHeap_4) {
+    test4();
+}
+
+TEST_F(LeftistHeapTester, LeftistHeap_5) {
+    test5();
+}
+
 TEST_F(SkewHeapTester, SkewHeap_1) {
     test1();
 }
@@ -160,6 +197,14 @@ TEST_F(SkewHeapTester, SkewHeap_2) {
 
 TEST_F(SkewHeapTester, SkewHeap_3) {
     test3();
+}
+
+TEST_F(SkewHeapTester, SkewHeap_4) {
+    test4();
+}
+
+TEST_F(SkewHeapTester, SkewHeap_5) {
+    test5();
 }
 
 
