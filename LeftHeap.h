@@ -50,8 +50,7 @@ public:
     void ExtractMin() {
         Vertex<T> *l = root->left;
         Vertex<T> *r = root->right;
-        root->left = nullptr;
-        root->right = nullptr;
+        root->Make_Empty();
         delete root;
         root = VertexLeft<T>::Meld(l, r);
     }

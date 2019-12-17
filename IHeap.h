@@ -25,6 +25,8 @@ struct Vertex {
         value = x;
     }
 
+    Vertex() = default;
+
     virtual ~ Vertex() {
         if (this != nullptr) {
             if (left != nullptr) {
@@ -34,6 +36,11 @@ struct Vertex {
                 delete right;
             }
         }
+    }
+
+    void Make_Empty() {
+        left = nullptr;
+        right = nullptr;
     }
 };
 

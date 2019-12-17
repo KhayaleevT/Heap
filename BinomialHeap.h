@@ -11,9 +11,10 @@ template<typename T>
 class BinomialHeap : public IHeap<T> {
 private:
 
-    class VertexB {
+    class VertexB : public Vertex<T> {
+        using Vertex<T>::Vertex;
     public:
-        static VertexB *_Meld_Similar(VertexB *a, VertexB *b) {
+        static Vertex<T> *_Meld_Similar(Vertex<T> *a, Vertex<T> *b) {
             if (a->value > b->value) {
                 std::swap(a, b);
             }
@@ -21,40 +22,15 @@ private:
             return c;
         }
 
-        void _destruct() {
-            if (left != nullptr) {
-                left->_destruct();
-            }
-            if (right != nullptr) {
-                right->_destruct();
-            }
-            delete this;
-        }
-
-        VertexB *left;
-        VertexB *right;
-        T value;
-
-        VertexB(T x) {
-            left = nullptr;
-            right = nullptr;
-            value = x;
-        }
-
-        VertexB() {
-            left = nullptr;
-            right = nullptr;
-        }
-
-        VertexB(VertexB *l, VertexB *r, T val) {
-            left = l;
-            right = r;
-            value = val;
+        VertexB(Vertex<T> *l, Vertex<T> *r, T val) {
+            Vertex<T>::left = l;
+            Vertex<T>::right = r;
+            Vertex<T>::value = val;
         }
     };
 
     int min_index;
-    vector<VertexB *> Tree;
+    vector<Vertex<T> *> Tree;
 
     void _recount_min_index() {
         min_index = -1;
@@ -76,7 +52,7 @@ public:
     ~BinomialHeap() {
         for (size_t i = 0; i < Tree.size(); i++) {
             if (Tree[i] != nullptr) {
-                Tree[i]->_destruct();
+                delete Tree[i];
             }
         }
     }
@@ -86,7 +62,7 @@ public:
     BinomialHeap &operator=(BinomialHeap &) = delete;
 
     explicit BinomialHeap<T>(T x) {
-        VertexB *v = new VertexB(x);
+        Vertex<T> *v = new VertexB(x);
         Tree.push_back(v);
         min_index = 0;
     }
@@ -95,21 +71,21 @@ public:
         min_index = -1;
     }
 
-    BinomialHeap(vector<VertexB *> &x) {
+    BinomialHeap(vector<Vertex<T> *> &x) {
         Tree = x;
         _recount_min_index();
     }
 
     void Merge(IHeap<T> &b1) {
         BinomialHeap<T> &b = dynamic_cast<BinomialHeap<T> &>(b1);
-        VertexB *residue = new VertexB();
+        Vertex<T> *residue = new Vertex<T>;
         bool Resid_Empty = true;
         size_t new_size = max(b.Tree.size(), Tree.size());
         Tree.resize(new_size, nullptr);
         b.Tree.resize(new_size, nullptr);
         for (int i = 0; i < Tree.size(); i++) {
             if (Tree[i] != nullptr && b.Tree[i] != nullptr) {
-                VertexB *res = nullptr;
+                Vertex<T> *res = nullptr;
                 if (!Resid_Empty) {
                     res = residue;
                 }
@@ -160,19 +136,23 @@ public:
     }
 
     void ExtractMin() {
-        VertexB *cur = Tree[min_index];
+        Vertex<T> *cur = Tree[min_index];
         Tree[min_index] = nullptr;
         if (min_index == Tree.size() - 1) {
             Tree.pop_back();
         }
-        vector<VertexB *> resid;
+        vector<Vertex<T> *> resid;
         while (cur != nullptr && cur->right != nullptr) {
             resid.push_back(cur->right);
-            VertexB *old_cur = cur;
+            Vertex<T> *old_cur = cur;
             cur = cur->left;
-            delete (old_cur);
+            old_cur->left = nullptr;
+            old_cur->right = nullptr;
+            delete old_cur;
         }
         if (cur != nullptr) {
+            cur->left = nullptr;
+            cur->right = nullptr;
             delete (cur);
         }
         reverse(resid.begin(), resid.end());
