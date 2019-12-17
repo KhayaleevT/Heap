@@ -15,6 +15,29 @@ using std::pair;
 using std::max;
 
 template<typename T>
+struct Vertex {
+    T value;
+    Vertex *left = nullptr, *right = nullptr;
+
+    Vertex(T x) {
+        left = nullptr;
+        right = nullptr;
+        value = x;
+    }
+
+    virtual ~ Vertex() {
+        if (this != nullptr) {
+            if (left != nullptr) {
+                delete left;
+            }
+            if (right != nullptr) {
+                delete right;
+            }
+        }
+    }
+};
+
+template<typename T>
 class IHeap {
 public:
     virtual void Merge(IHeap<T> &) = 0;

@@ -9,7 +9,7 @@
 #include "LeftHeap.h"
 
 template<typename T>
-struct VertexL : public Vertex<T> {
+struct VertexL : public VertexLeft<T> {
     int rank = 0;
 
     static int rk(VertexL *a) {
@@ -18,15 +18,15 @@ struct VertexL : public Vertex<T> {
         } else return a->rank;
     }
 
-    VertexL(T x) : Vertex<T>(x) {
+    VertexL(T x) : VertexLeft<T>(x) {
         rank = 1;
     }
 
     void invariant_maintenance() {
-        VertexL<T> *l = dynamic_cast<VertexL<T> *>(Vertex<T>::left);
-        VertexL<T> *r = dynamic_cast<VertexL<T> *>(Vertex<T>::right);
+        VertexL<T> *l = dynamic_cast<VertexL<T> *>(VertexLeft<T>::left);
+        VertexL<T> *r = dynamic_cast<VertexL<T> *>(VertexLeft<T>::right);
         if (rk(l) < rk(r)) {
-            std::swap(Vertex<T>::left, Vertex<T>::right);
+            std::swap(VertexLeft<T>::left, VertexLeft<T>::right);
             std::swap(l, r);
         }
         rank = rk(r) + 1;

@@ -10,30 +10,12 @@
 #include "IHeap.h"
 
 template<typename T>
-struct Vertex {
-    T value;
-    Vertex *left = nullptr, *right = nullptr;
-
-    Vertex(T x) {
-        left = nullptr;
-        right = nullptr;
-        value = x;
-    }
-
-    virtual ~ Vertex() {
-        if (this != nullptr) {
-            if (left != nullptr) {
-                delete left;
-            }
-            if (right != nullptr) {
-                delete right;
-            }
-        }
-    }
+struct VertexLeft : Vertex<T> {
+    using Vertex<T>::Vertex;
 
     virtual void invariant_maintenance() = 0;
 
-    static Vertex<T> *Meld(Vertex *root1, Vertex *root2) {
+    static Vertex<T> *Meld(Vertex<T> *root1, Vertex<T> *root2) {
         if (root1 == nullptr) {
             return root2;
         }
@@ -44,7 +26,8 @@ struct Vertex {
             std::swap(root1, root2);
         }
         root1->right = Meld(root1->right, root2);
-        root1->invariant_maintenance();
+        VertexLeft<T> *r1 = dynamic_cast<VertexLeft<T> *>(root1);
+        r1->invariant_maintenance();
         return root1;
     }
 };
@@ -56,7 +39,7 @@ public:
 public:
     void Merge(IHeap<T> &b1) {
         LeftHeap<T> &b = dynamic_cast<LeftHeap<T> &>(b1);
-        root = Vertex<T>::Meld(root, b.root);
+        root = VertexLeft<T>::Meld(root, b.root);
         b.root = nullptr;
     }
 
@@ -70,7 +53,7 @@ public:
         root->left = nullptr;
         root->right = nullptr;
         delete root;
-        root = Vertex<T>::Meld(l, r);
+        root = VertexLeft<T>::Meld(l, r);
     }
 
     virtual void Insert(T x) = 0;
@@ -80,7 +63,7 @@ public:
     LeftHeap() = default;
 
     explicit LeftHeap(T x) {
-        root = new Vertex<T>(x);
+        root = new VertexLeft<T>(x);
     }
 
     LeftHeap &operator=(LeftHeap &) = delete;

@@ -9,11 +9,11 @@
 #include "LeftHeap.h"
 
 template<typename T>
-struct VertexS : public Vertex<T> {
-    using Vertex<T>::Vertex;
+struct VertexS : public VertexLeft<T> {
+    using VertexLeft<T>::VertexLeft;
 
     void invariant_maintenance() {
-        std::swap(Vertex<T>::left, Vertex<T>::right);
+        std::swap(VertexLeft<T>::left, VertexLeft<T>::right);
     };
 };
 

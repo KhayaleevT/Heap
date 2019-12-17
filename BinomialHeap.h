@@ -11,13 +11,13 @@ template<typename T>
 class BinomialHeap : public IHeap<T> {
 private:
 
-    class Vertex {
+    class VertexB {
     public:
-        static Vertex *_Meld_Similar(Vertex *a, Vertex *b) {
+        static VertexB *_Meld_Similar(VertexB *a, VertexB *b) {
             if (a->value > b->value) {
                 std::swap(a, b);
             }
-            Vertex *c = new Vertex(a, b, a->value);
+            VertexB *c = new VertexB(a, b, a->value);
             return c;
         }
 
@@ -31,22 +31,22 @@ private:
             delete this;
         }
 
-        Vertex *left;
-        Vertex *right;
+        VertexB *left;
+        VertexB *right;
         T value;
 
-        Vertex(T x) {
+        VertexB(T x) {
             left = nullptr;
             right = nullptr;
             value = x;
         }
 
-        Vertex() {
+        VertexB() {
             left = nullptr;
             right = nullptr;
         }
 
-        Vertex(Vertex *l, Vertex *r, T val) {
+        VertexB(VertexB *l, VertexB *r, T val) {
             left = l;
             right = r;
             value = val;
@@ -54,7 +54,7 @@ private:
     };
 
     int min_index;
-    vector<Vertex *> Tree;
+    vector<VertexB *> Tree;
 
     void _recount_min_index() {
         min_index = -1;
@@ -86,7 +86,7 @@ public:
     BinomialHeap &operator=(BinomialHeap &) = delete;
 
     explicit BinomialHeap<T>(T x) {
-        Vertex *v = new Vertex(x);
+        VertexB *v = new VertexB(x);
         Tree.push_back(v);
         min_index = 0;
     }
@@ -95,25 +95,25 @@ public:
         min_index = -1;
     }
 
-    BinomialHeap(vector<Vertex *> &x) {
+    BinomialHeap(vector<VertexB *> &x) {
         Tree = x;
         _recount_min_index();
     }
 
     void Merge(IHeap<T> &b1) {
         BinomialHeap<T> &b = dynamic_cast<BinomialHeap<T> &>(b1);
-        Vertex *residue = new Vertex();
+        VertexB *residue = new VertexB();
         bool Resid_Empty = true;
         size_t new_size = max(b.Tree.size(), Tree.size());
         Tree.resize(new_size, nullptr);
         b.Tree.resize(new_size, nullptr);
         for (int i = 0; i < Tree.size(); i++) {
             if (Tree[i] != nullptr && b.Tree[i] != nullptr) {
-                Vertex *res = nullptr;
+                VertexB *res = nullptr;
                 if (!Resid_Empty) {
                     res = residue;
                 }
-                residue = Vertex::_Meld_Similar(Tree[i], (b.Tree[i]));
+                residue = VertexB::_Meld_Similar(Tree[i], (b.Tree[i]));
                 Tree[i] = nullptr;
                 if (!Resid_Empty) {
                     Tree[i] = res;
@@ -123,14 +123,14 @@ public:
             }
             if (Tree[i] != nullptr) {
                 if (!Resid_Empty) {
-                    residue = Vertex::_Meld_Similar(residue, Tree[i]);
+                    residue = VertexB::_Meld_Similar(residue, Tree[i]);
                     Tree[i] = nullptr;
                 }
                 continue;
             }
             if (b.Tree[i] != nullptr) {
                 if (!Resid_Empty) {
-                    residue = Vertex::_Meld_Similar(residue, b.Tree[i]);
+                    residue = VertexB::_Meld_Similar(residue, b.Tree[i]);
                     b.Tree[i] = nullptr;
                 } else {
                     Tree[i] = b.Tree[i];
@@ -160,15 +160,15 @@ public:
     }
 
     void ExtractMin() {
-        Vertex *cur = Tree[min_index];
+        VertexB *cur = Tree[min_index];
         Tree[min_index] = nullptr;
         if (min_index == Tree.size() - 1) {
             Tree.pop_back();
         }
-        vector<Vertex *> resid;
+        vector<VertexB *> resid;
         while (cur != nullptr && cur->right != nullptr) {
             resid.push_back(cur->right);
-            Vertex *old_cur = cur;
+            VertexB *old_cur = cur;
             cur = cur->left;
             delete (old_cur);
         }
